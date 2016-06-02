@@ -17,4 +17,4 @@ before_install:
 
 install: composer update
 
-script: phpunit -v --coverage-text
+script: ./vendor/bin/phpunit -v --coverage-text
