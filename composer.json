@@ -1,0 +1,25 @@
+{
+  "name": "trademachines/guzzle5-circuit-breaker",
+  "type": "library",
+  "keywords": ["guzzle"],
+  "require": {
+    "php": ">= 5.5",
+    "guzzlehttp/guzzle": "^5.0",
+    "doctrine/cache": "^1.6",
+    "psr/log": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "@stable"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Trademachines\\Guzzle5\\CircuitBreaker\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Trademachines\\Guzzle5\\CircuitBreaker\\Tests\\": "tests/"
+    }
+  }
+}
