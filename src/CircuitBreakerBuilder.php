@@ -68,6 +68,10 @@ final class CircuitBreakerBuilder
         );
         $breaker->getConfigSettings()->merge($this->configSettings);
 
+        if ($this->logger) {
+            $breaker->setLogger($this->logger);
+        }
+
         return $breaker;
     }
 
