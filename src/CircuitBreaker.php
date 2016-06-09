@@ -29,8 +29,8 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
     private $configSettings;
 
     private static $DEFAULT_CONFIG_SETTINGS = [
-        'connect_timeout' => 3,
-        'timeout'         => 3,
+        'connect_timeout' => 1,
+        'timeout'         => 2,
     ];
 
     public function __construct(DetectionInterface $detection, BehaviourInterface $behaviour, State $state)
