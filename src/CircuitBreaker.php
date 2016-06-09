@@ -27,6 +27,9 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
 
     /** @var Collection */
     private $configSettings;
+    
+    /** @var string */
+    private $name;
 
     private static $DEFAULT_CONFIG_SETTINGS = [
         'connect_timeout' => 1,
@@ -54,7 +57,7 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
     {
         $this->addConfigSettings($event->getRequest()->getConfig());
 
-        if (!$this->state->isOk()) {
+        if (!$this->state->isOk($this->name)) {
             $this->handleErroneousState($event);
         }
     }
@@ -62,7 +65,7 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
     public function onError(ErrorEvent $event)
     {
         if ($this->isErroneousEvent($event)) {
-            $this->state->ok(false);
+            $this->state->ok(false, $this->name);
             $this->handleErroneousState($event);
             $this->logErroneousState($event);
         }
@@ -93,6 +96,22 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
         return $this->configSettings;
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    
     private function isErroneousEvent($event)
     {
         $exception = null;

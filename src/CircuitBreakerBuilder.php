@@ -24,13 +24,21 @@ use Trademachines\Guzzle5\CircuitBreaker\Detection\TimeoutDetection;
 final class CircuitBreakerBuilder
 {
     /**
+     * @param string|null $name
+     * 
      * @return static
      */
-    public static function create()
+    public static function create($name = null)
     {
-        return new static();
+        $builder = new static();
+        $builder->name = $name;
+
+        return $builder;
     }
 
+    /** @var string */
+    private $name;
+    
     /** @var DetectionInterface */
     private $detection;
 
@@ -68,6 +76,10 @@ final class CircuitBreakerBuilder
         );
         $breaker->getConfigSettings()->merge($this->configSettings);
 
+        if ($this->name) {
+            $breaker->setName($this->name);
+        }
+        
         if ($this->logger) {
             $breaker->setLogger($this->logger);
         }

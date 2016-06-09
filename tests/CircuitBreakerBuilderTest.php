@@ -11,7 +11,7 @@ class CircuitBreakerBuilderTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage You need to specify a namespace for your cache
      */
-    public function testNeedStateCacheNamespace()
+    public function testNeedStateCacheNamespaceIfNoCacheIsSpecified()
     {
         CircuitBreakerBuilder::create()->build();
     }
@@ -47,5 +47,14 @@ class CircuitBreakerBuilderTest extends \PHPUnit_Framework_TestCase
 
         self::assertCount(1, $listener);
         self::assertInstanceOf(CircuitBreaker::class, $listener[0]);
+    }
+
+    public function testSetNameIfGiven()
+    {
+        $breaker = CircuitBreakerBuilder::create('foobar')
+            ->setStateCacheNamespace('test')
+            ->build();
+
+        self::assertEquals('foobar', $breaker->getName());
     }
 }

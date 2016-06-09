@@ -22,26 +22,37 @@ class State
     }
 
     /**
+     * @param string|null $name
+     *
      * @return bool
      */
-    public function isOk()
+    public function isOk($name = null)
     {
-        return !$this->cache->contains(self::ERRONEOUS_CACHE_KEY);
+        return !$this->cache->contains($this->getCacheKey($name));
     }
 
     /**
      * Set the state.
-     * 
-     * @param bool $ok
+     *
+     * @param bool        $ok
+     * @param string|null $name
      */
-    public function ok($ok = true)
+    public function ok($ok, $name = null)
     {
-        $ok = (bool) $ok;
+        $ok  = (bool) $ok;
+        $key = $this->getCacheKey($name);
 
         if ($ok === true) {
-            $this->cache->delete(self::ERRONEOUS_CACHE_KEY);
+            $this->cache->delete($key);
         } else {
-            $this->cache->save(self::ERRONEOUS_CACHE_KEY, 1, $this->ttl);
+            $this->cache->save($key, 1, $this->ttl);
         }
+    }
+
+    protected function getCacheKey($name = null)
+    {
+        return $name
+            ? $name . '.' . self::ERRONEOUS_CACHE_KEY
+            : self::ERRONEOUS_CACHE_KEY;
     }
 }
