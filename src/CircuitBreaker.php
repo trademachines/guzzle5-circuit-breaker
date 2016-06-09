@@ -64,6 +64,7 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
         if ($this->isErroneousEvent($event)) {
             $this->state->ok(false);
             $this->handleErroneousState($event);
+            $this->logErroneousState($event);
         }
     }
 
@@ -101,5 +102,15 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
         }
 
         return $this->detection->isErroneous($event->getRequest(), $event->getResponse(), $exception);
+    }
+
+    private function logErroneousState(ErrorEvent $event)
+    {
+        if (!$this->logger) {
+            return;
+        }
+
+        $url = $event->getTransferInfo(CURLINFO_EFFECTIVE_URL);
+        $this->logger->critical(sprintf('Call to %s failed.', $url));
     }
 }

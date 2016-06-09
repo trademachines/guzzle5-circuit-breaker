@@ -8,6 +8,7 @@ use Doctrine\Common\Cache\PhpFileCache;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Collection;
+use Psr\Log\LoggerInterface;
 use Trademachines\Guzzle5\CircuitBreaker\Behaviour\BehaviourInterface;
 use Trademachines\Guzzle5\CircuitBreaker\Behaviour\NoopBehaviour;
 use Trademachines\Guzzle5\CircuitBreaker\Detection\DetectionChain;
@@ -48,6 +49,9 @@ final class CircuitBreakerBuilder
     /** @var Collection|array */
     private $configSettings = [];
 
+    /** @var LoggerInterface */
+    private $logger;
+    
     /**
      * @return CircuitBreaker
      * @throws \InvalidArgumentException
@@ -190,6 +194,18 @@ final class CircuitBreakerBuilder
     {
         $this->stateCacheNamespace = $stateCacheNamespace;
 
+        return $this;
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * 
+     * @return $this
+     */
+    public function setLogger(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+        
         return $this;
     }
 

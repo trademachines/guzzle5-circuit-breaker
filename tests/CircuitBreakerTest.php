@@ -10,6 +10,8 @@ use GuzzleHttp\Message\Request;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Transaction;
 use Prophecy\Argument;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Trademachines\Guzzle5\CircuitBreaker\Behaviour\BehaviourInterface;
 use Trademachines\Guzzle5\CircuitBreaker\CircuitBreaker;
 use Trademachines\Guzzle5\CircuitBreaker\Detection\DetectionInterface;
@@ -101,6 +103,18 @@ class CircuitBreakerTest extends \PHPUnit_Framework_TestCase
         $breaker->onError($event);
 
         $behaviour->act($event)->shouldHaveBeenCalled();
+    }
+
+    public function testLogErrorIfEventIsErroneous()
+    {
+        $logger    = new BufferedLogger();
+        $behaviour = $this->getBehaviour();
+        $breaker   = $this->getCircuitBreaker($this->getDetection(true)->reveal(), $behaviour->reveal());
+        $breaker->setLogger($logger);
+        $event     = new ErrorEvent($this->getTransaction());
+        $breaker->onError($event);
+
+        self::assertCount(1, $logger->getMessages());
     }
 
     private function getDetection($erroneous = false)
