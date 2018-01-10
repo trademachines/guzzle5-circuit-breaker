@@ -129,7 +129,8 @@ class CircuitBreaker implements SubscriberInterface, LoggerAwareInterface
             return;
         }
 
-        $url = $event->getTransferInfo(CURLINFO_EFFECTIVE_URL);
-        $this->logger->critical(sprintf('Call to %s failed.', $url));
+        $url = $event->getTransferInfo('url');
+        $msg = $event->getException()->getMessage();
+        $this->logger->critical(sprintf('[%s], Call to %s failed: %s.', $this->name, $url, $msg));
     }
 }
